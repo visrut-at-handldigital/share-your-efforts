@@ -1,0 +1,7 @@
+pnpm dlx create-next-app@latest
+cd share-your-efforts-frontend
+
+> inside share-your-efforts-frontend
+pnpm dlx shadcn@latest init
+pnpm dlx shadcn@latest add dialog
+> then follow instructions here: https://ui.shadcn.com/docs/components/dialog
