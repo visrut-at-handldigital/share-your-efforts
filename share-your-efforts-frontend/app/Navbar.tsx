@@ -1,6 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
+import { GoogleLogin } from "@react-oauth/google";
+import { googleLogout } from "@react-oauth/google";
+
+import * as jwt_decode from "jwt-decode";
+
 import Web3 from "web3";
 import {
   Dialog,
@@ -43,6 +49,7 @@ const Navbar = () => {
 
   const logoutFromMetaMask = () => {
     setAccount("");
+    googleLogout();
   };
 
   return (
@@ -54,13 +61,42 @@ const Navbar = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center pb-5">Login</DialogTitle>
-            <DialogDescription className="flex flex-col items-center">
-              <button
-                className="py-2.5 px-5 mt-5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-[70%]"
-                onClick={connectToMetaMask}
-              >
-                Connect to MetaMask
-              </button>
+            <DialogDescription className="flex flex-col items-center gap-y-4">
+              {!account && (
+                <>
+                  <button
+                    className="py-2.5 px-5 mt-5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-[70%]"
+                    onClick={connectToMetaMask}
+                  >
+                    Connect to MetaMask
+                  </button>
+
+                  <GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                      if (!credentialResponse.credential) {
+                        alert("Login Failed");
+                        return;
+                      }
+
+                      const data: { email: string } = jwt_decode.jwtDecode(
+                        credentialResponse.credential
+                      );
+
+                      setAccount(data.email);
+                      setIsDialogOpen(false);
+                    }}
+                    onError={() => {
+                      console.log("Login Failed");
+                    }}
+                  />
+                </>
+              )}
+
+              {account && (
+                <section>
+                  <h1 className="font-semibold">Account: {account}</h1>
+                </section>
+              )}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
