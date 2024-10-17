@@ -40,6 +40,40 @@ const Navbar = () => {
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const accounts = await web3.eth.getAccounts();
+
+      const walletAddress = accounts[0];
+
+      const response = await fetch(
+        "http://localhost:4000/api/auth/metamask-nonce",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ walletAddress }),
+        }
+      );
+
+      const { nonce } = await response.json();
+
+      // RPC method to sign the nonce
+      const signature = await web3.eth.personal.sign(
+        nonce,
+        walletAddress,
+        "abc"
+      );
+
+      const loginResponse = await fetch(
+        "http://localhost:4000/api/auth/metamask",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ walletAddress, signature }),
+        }
+      );
+
+      const { token } = await loginResponse.json();
+
+      console.log(token);
+
       setAccount(accounts[0]);
       setIsDialogOpen(false);
     } catch (error) {

@@ -10,3 +10,11 @@ pnpm install web3
 pnpm i @react-oauth/google
 pnpm i jwt-decode
 > Followed this video: https://www.youtube.com/watch?v=UUJfTsn6S_Y
+
+# for the backend
+pnpm dlx @nestjs/cli new share-your-efforts-backend
+cd share-your-efforts-backend
+pnpm i --save @nestjs/config
+pnpm i @metamask/eth-sig-util
+pnpm i ethereumjs-util
+pnpm install jsonwebtoken
